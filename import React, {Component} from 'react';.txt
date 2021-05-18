@@ -1,0 +1,522 @@
+import React, {Component} from 'react';  
+import {
+  View,
+  StatusBar,
+  Button,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  ScrollView,
+  Image
+} from 'react-native';  
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
+import 'react-native-gesture-handler';
+import styles from './style';
+import Logo from './src/components/logo';
+import Logo2 from './src/components/logo2'
+
+
+export default class LoginActivity extends Component {  
+  constructor(props){
+    super(props);
+    this.state = {
+      login: false
+      // checkin: false
+    }
+    this.toggleLogin = this.toggleLogin.bind(this);
+}
+toggleLogin = () => {
+  this.setState(prevState => ({ login: !prevState.login }))
+}
+  render() {  
+    return (  
+      <View style={styles.container}>
+       {/* <StatusBar
+         backgroundColor="#874845"
+         barStyle="light-content"
+         /> */}
+        <ScrollView  style={styles.cont}>
+           <View>
+            {this.state.login ? <LoginScreen toggleLogin={this.toggleLogin} /> : <LogoutScreen toggleLogin={this.toggleLogin}/>}
+           </View>
+          </ScrollView>
+          {/* <Button  
+                    title="Go to Profile"  
+                    onPress={() => this.props.navigation.navigate('Profile')}  
+                />  */}
+      </View>  
+    );  
+  }  
+} 
+
+
+
+
+class LoginScreen extends Component {
+  constructor(props){
+    super(props)
+      this.state = {
+         fullName: '',
+         userName : '',
+         userEmail: '',
+         userPassword: ''
+    }
+  }
+
+  userSignupFunction = () => {
+      // if((this.state.UserName))
+    return fetch('http://192.168.43.91/church/signup.php/?fullname='+this.state.fullName+'&&username='+this.state.userName+'&&useremail='+this.state.userEmail+'&&userpassword='+this.state.userPassword,  {
+      "method": "GET",
+      "headers": {
+        'Accept': 'application/json',
+       'Content-Type': 'application/json',
+      }
+    }).then((response) => response.json())
+        .then((responseJson) => {
+          if(responseJson === "success"){
+             alert(responseJson)
+          }else{
+            alert(responseJson)   
+          }
+        }).catch((error) => {
+           console.error(error);
+         });
+
+  }
+  render() {
+      return (
+        <View style={styles.container}>
+        <Logo/>
+        <TextInput style={styles.inputBox} underlineColorAndroid='rgba(0,0,0,0)' 
+              placeholder="FullName"
+              placeholderTextColor='#ffffff'
+              selectionColor="#ffffff"
+              onSubmitEditing={()=> this.lname.focus()}
+              onChangeText={FullName => this.setState({fullName})}
+              />
+              <TextInput style={styles.inputBox} underlineColorAndroid='rgba(0,0,0,0)' 
+              placeholder="UserName"
+              placeholderTextColor='#ffffff'
+              selectionColor="#ffffff"
+              ref={(input) => this.lname = input}
+              onSubmitEditing={()=> this.email.focus()}
+              onChangeText={UserName => this.setState({userName})}
+              />
+              <TextInput style={styles.inputBox} underlineColorAndroid='rgba(0,0,0,0)' 
+              placeholder="Email"
+              placeholderTextColor='#ffffff'
+              selectionColor="#ffffff"
+              keyboardTypes="email.address"
+              ref={(input) => this.email = input}
+              onSubmitEditing={()=> this.password.focus()}
+              onChangeText={UserEmail => this.setState({userEmail})}
+              />
+              <TextInput style={styles.inputBox} 
+              underlineColorAndroid='rgba(0,0,0,0)' 
+              placeholder="Password"
+              secureTextEntry={true}
+              placeholderTextColor='#ffffff'
+              ref={(input) => this.password = input}
+              onChangeText={UserPassword => this.setState({userPassword})}
+               />
+            
+              <TouchableOpacity onPress={this.userSignupFunction} style={styles.button}>
+                 <Text style={styles.buttText} >Submit</Text>
+              </TouchableOpacity>
+
+        <View style={styles.signupTextCont}>
+           <Text style={styles.signupText}>Already have an acount?  </Text>
+           <TouchableOpacity onPress={this.props.toggleLogin}><Text style={styles.signupButton}>Sign in</Text></TouchableOpacity>
+        </View>
+    </View> 
+      );
+  }
+
+}
+
+
+class BigInput extends Component {
+  render() {
+  <View>
+    <TextInput
+              //  Inherit any props passed to it; e.g./ mutiline, nubersofline below
+                //  {...this.props}
+                editable = {true}
+                maxLenght = {40}
+                multiline = {true}
+                numberOfLines = {2}
+                onChangeText={(text) => this.setState({text})}
+                value={this.state.text}
+                style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+              />
+  </View>
+  }
+}
+// Creating Profile activity.
+class ProfileActivity extends Component
+{
+  // Setting up profile activity title.
+   static navigationOptions =
+   {
+      title: 'ProfileActivity',
+    
+   };
+  constructor(props) {
+    super(props)
+    this.state = {
+      text: '',
+      comment: ''
+    }
+  }
+     
+  placeSubmitHandler = () => {  
+    alert("Message Sent")  ;
+  };  
+
+ 
+   render()
+   {
+ 
+    //  const {goBack} = this.props.navigation;
+ 
+      return(
+         <View style = { styles.MainContainer, {justifyContent: "flex-start", backgroundColor: '#243754'} }>
+           <View style={{paddingBottom:3, paddingLeft:15}}><Logo2/></View>
+           {/* <Button style = {{width: '30%'}}title="Logout"  onPress={ () => goBack(null) } /> */}
+          <View style= {{borderRadius:10, marginLeft:5, justifyContent: "center", marginRight:5, paddingBottom: 20, backgroundColor: '#243754', color:'#ffffff'}}>
+          <View style = {{borderRadius:10, marginLeft:5,  marginRight:5, paddingBottom: 20, backgroundColor: '#243754', color:'#ffffff' }}>
+          <Text onPress={this.props.logoutFunction} style={{paddingTop: 5, fontSize: 15, paddingLeft: 12, color:'#ffffff'}}>Enter Your Post</Text>
+          {/* onPress = {this.setState(Nlogin => 'false')}  */}
+           <View style = {styles.postBox}>
+              <TextInput
+              //  Inherit any props passed to it; e.g./ mutiline, nubersofline below
+                //  {...this.props}
+                editable = {true}
+                maxLenght = {40}
+                multiline = {true}
+                numberOfLines = {2}
+                onChangeText={(text) => this.setState({text})}
+                // value={this.state.text}
+                placeholder = {'post'}
+                style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+              />
+                {/* <Text style = {styles.TextComponentStyle}> { this.props.navigation.state.params.Email } </Text> */}
+                <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                title="SEND"  
+                                onPress={this.placeSubmitHandler}  
+                        />  
+            </View>
+            </View>
+            <ScrollView>
+               <View>
+                 <Text style={{color: '#ffffff', fontSize: 18, paddingLeft: 15, paddingBottom: 4}}>Recent Post</Text>
+                 <View style={{backgroundColor: '#243754', marginLeft: 8, marginRight: 8, borderRadius: 10}}>
+                  <View style={{marginBottom: 15, backgroundColor: '#ffffff', borderRadius:10}}>
+                      <View style={{backgroundColor: '#874845'}}>
+                         <Text style= {{color :'#ffffff', paddingLeft: 10, fontSize: 16}}>Jhon Doe</Text>
+                      </View>
+                     <Text style={{padding: 4, color: 'grey'}}>
+                       blue colour, blue-gray, cold tones, color matching, cyan color, dark gray, dark green, dull turquoise, gray-blue, gray-turquoise, green color, greenery color, light gray, light gray with a shade of blue, light green, Navy color, saturated blue, shades of grey, shades of winter, slate-gray.
+                     </Text>
+                        <View style={{justifyContent: "center"}}>
+                          <View style = {styles.postBox}>
+                          <TextInput
+                              editable = {true}
+                              maxLenght = {20}
+                              multiline = {true}
+                              numberOfLines = {1}
+                              onChangeText={(comment) => this.setState({comment})}
+                              //  value={this.state.text}
+                              placeholder = {'comment'}
+                              style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+                            />
+                          
+                        <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                    title="SEND"  
+                                    onPress={this.placeSubmitHandler}  
+                            />  
+                            </View>
+                          </View>
+                      </View>
+
+
+
+                      <View style={{marginBottom: 15, backgroundColor: '#ffffff', borderRadius:10}}>
+                      <View style={{backgroundColor: '#874845'}}>
+                         <Text style= {{color :'#ffffff', paddingLeft: 10, fontSize: 16}}>Jhon Doe</Text>
+                      </View>
+                     <Text style={{padding: 4}} >
+                       blue colour, blue-gray, cold tones, color matching, cyan color, dark gray, dark green, dull turquoise, gray-blue, gray-turquoise, green color, greenery color, light gray, light gray with a shade of blue, light green, Navy color, saturated blue, shades of grey, shades of winter, slate-gray.
+                     </Text>
+                        <View style={{justifyContent: "center"}}>
+                          <View style = {styles.postBox}>
+                          <TextInput
+                              editable = {true}
+                              maxLenght = {20}
+                              multiline = {true}
+                              numberOfLines = {1}
+                              onChangeText={(text) => this.setState({text})}
+                              // value={this.state.text}
+                              placeholder = {'comment'}
+                              style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+                            />
+                          
+                        <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                    title="SEND"  
+                                    onPress={this.placeSubmitHandler}  
+                            />  
+                            </View>
+                          </View>
+                      </View>
+
+
+                      <View style={{marginBottom: 15, backgroundColor: '#ffffff', borderRadius:10}}>
+                      <View style={{backgroundColor: '#874845'}}>
+                         <Text style= {{color :'#ffffff', paddingLeft: 10, fontSize: 16}}>Jhon Doe</Text>
+                      </View>
+                     <Text style={{padding: 4}}>
+                       blue colour, blue-gray, cold tones, color matching, cyan color, dark gray, dark green, dull turquoise, gray-blue, gray-turquoise, green color, greenery color, light gray, light gray with a shade of blue, light green, Navy color, saturated blue, shades of grey, shades of winter, slate-gray.
+                     </Text>
+                        <View style={{justifyContent: "center"}}>
+                          <View style = {styles.postBox}>
+                          <TextInput
+                              editable = {true}
+                              maxLenght = {20}
+                              multiline = {true}
+                              numberOfLines = {1}
+                              onChangeText={(text) => this.setState({text})}
+                              // value={this.state.text}
+                              placeholder = {'comment'}
+                              style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+                            />
+                          
+                        <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                    title="SEND"  
+                                    onPress={this.placeSubmitHandler}  
+                            />  
+                            </View>
+                          </View>
+                      </View>
+
+
+
+                      <View style={{marginBottom: 15, backgroundColor: '#ffffff', borderRadius:10}}>
+                      <View style={{backgroundColor: '#874845'}}>
+                         <Text style= {{color :'#ffffff', paddingLeft: 10, fontSize: 16}}>Jhon Doe</Text>
+                      </View>
+                     <Text style={{padding: 4}}>
+                       blue colour, blue-gray, cold tones, color matching, cyan color, dark gray, dark green, dull turquoise, gray-blue, gray-turquoise, green color, greenery color, light gray, light gray with a shade of blue, light green, Navy color, saturated blue, shades of grey, shades of winter, slate-gray.
+                     </Text>
+                        <View style={{justifyContent: "center"}}>
+                          <View style = {styles.postBox}>
+                          <TextInput
+                              editable = {true}
+                              maxLenght = {20}
+                              multiline = {true}
+                              numberOfLines = {1}
+                              onChangeText={(text) => this.setState({text})}
+                              // value={this.state.text}
+                              placeholder = {'comment'}
+                              style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+                            />
+                          
+                        <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                    title="SEND"  
+                                    onPress={this.placeSubmitHandler}  
+                            />  
+                            </View>
+                          </View>
+                      </View>
+
+
+                      <View style={{marginBottom: 15, backgroundColor: '#ffffff', borderRadius:10}}>
+                      <View style={{backgroundColor: '#874845'}}>
+                         <Text style= {{color :'#ffffff', paddingLeft: 10, fontSize: 16}}>Jhon Doe</Text>
+                      </View>
+                     <Text style={{padding: 4}}>
+                       blue colour, blue-gray, cold tones, color matching, cyan color, dark gray, dark green, dull turquoise, gray-blue, gray-turquoise, green color, greenery color, light gray, light gray with a shade of blue, light green, Navy color, saturated blue, shades of grey, shades of winter, slate-gray.
+                     </Text>
+                        <View style={{justifyContent: "center"}}>
+                          <View style = {styles.postBox}>
+                          <TextInput
+                              editable = {true}
+                              maxLenght = {20}
+                              multiline = {true}
+                              numberOfLines = {1}
+                              onChangeText={(text) => this.setState({text})}
+                              // value={this.state.text}
+                              placeholder = {'comment'}
+                              style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+                            />
+                          
+                        <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                    title="SEND"  
+                                    onPress={this.placeSubmitHandler}  
+                            />  
+                            </View>
+                          </View>
+                      </View>
+
+                      <View style={{marginBottom: 15, backgroundColor: '#ffffff', borderRadius:10}}>
+                      <View style={{backgroundColor: '#874845'}}>
+                         <Text style= {{color :'#ffffff', paddingLeft: 10, fontSize: 16}}>Jhon Doe</Text>
+                      </View>
+                     <Text style={{padding: 4}}>
+                       blue colour, blue-gray, cold tones, color matching, cyan color, dark gray, dark green, dull turquoise, gray-blue, gray-turquoise, green color, greenery color, light gray, light gray with a shade of blue, light green, Navy color, saturated blue, shades of grey, shades of winter, slate-gray.
+                     </Text>
+                        <View style={{justifyContent: "center"}}>
+                          <View style = {styles.postBox}>
+                          <TextInput
+                              editable = {true}
+                              maxLenght = {20}
+                              multiline = {true}
+                              numberOfLines = {1}
+                              onChangeText={(text) => this.setState({text})}
+                              // value={this.state.text}
+                              placeholder = {'comment'}
+                              style={{fontSize: 10, backgroundColor: "#ebebeb", borderRadius: 20, marginLeft: 5, marginRight: 0, width: '80%'}}
+                            />
+                          
+                              <Button  style={{width: 30, marginRight: 10, borderRadius:60}}
+                                    title="SEND"  
+                                    onPress={this.placeSubmitHandler}  
+                             />  
+                            </View>
+                          </View>
+                      </View>
+
+
+                 </View>
+               </View>
+            </ScrollView>
+         </View>
+         </View>
+      );
+   }
+}
+ 
+class LogoutScreen extends Component {
+  static nativagionOptions = 
+  {
+    title: 'LoginActivity',
+  };
+
+  constructor(props) {
+    
+    super(props)
+      this.state = {
+        userId: '',
+        userName: '',
+        userEmail: '',
+        userPassword: '',
+        nlogin: false,
+        test: 'ernfqerfuweun',
+        lerror: '',
+        lo: ''
+      }
+      // this.toggleLogin = this.toggleLogin.bind(this);
+      // this.logoutFunction = this.logoutFunction.bind(this);
+    }
+    
+  userLoginFunction = () => {
+//  alert(this.state.UserEmail);
+  // const { userEmail }  = this.state ;
+  // const { userPassword }  = this.state ;
+  // http://192.168.43.91/church/login.php/?useremail="+this.state.userEmail+"&&password="+this.state.userPassword
+    return fetch("http://192.168.43.91/church/login.php/?useremail="+this.state.userEmail+"&&password="+this.state.userPassword, {
+     "method": 'GET',
+     "headers": {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json',
+     }
+    //  ,body: JSON.stringify({
+    //    email: this.state.userEmail,
+    //    password: this.state.userPassword
+    
+    //  })
+    
+   }).then((response) => response.json())
+         .then((responseJson) => {
+        // console.error(responseJson);
+        // alert("rfgbergbiuv");
+           // If server response message same as Data Matched
+          if(responseJson.msg === 'Data Matched')
+           {
+               //Then open Profile activity and send user email to profile activity.
+              //  this.props.navigation.navigate('Profile');
+               this.setState(nlogin => true );
+               alert('Welcome  ' + responseJson.uname);
+               this.setState(userId => responseJson.id);
+               this.setState(fullName => responseJson.fname);
+               this.setState(userName => responseJson.uname);
+               this.setState(userEmail => responseJson.uemail);
+              //  console.error(responseJson)
+              // this.componentDidMount(this.setState(userName => 't'))
+           }
+           else{
+            // console.error(responseJson)
+            alert(responseJson);
+            // this.setState(Lerror => responseJson)
+           }
+   
+         }).catch((error) => {
+           console.error(error);
+          
+         });
+    
+     };
+
+  render() 
+  {
+    if(this.state.nlogin = true){
+      return (
+        <View>
+          <ProfileActivity logoutFunction={this.logoutFunction}/>
+          {/* <Text onPress={this.setState(nlogin => false)}>get out</Text> */}
+          <Button title="Click here to Logout" onPress={this.setState(nlogin => false) } />
+        </View>
+      );
+    }else{
+      return(
+      
+       <View style={styles.container}>
+            <View style={styles.container}>
+             <Logo/>
+             <View>
+               <TextInput style={styles.inputBox} underlineColorAndroid='rgba(0,0,0,0)' 
+               placeholder="Email"
+               placeholderTextColor='#ffffff'
+               selectionColor="#ffffff"
+               keyboardTypes="email.address"
+               onSubmitEditing={()=> this.password.focus()}
+               onChangeText={userEmail => this.setState({UserEmail})}
+               />
+               <TextInput style={styles.inputBox} 
+               underlineColorAndroid='rgba(0,0,0,0)' 
+               placeholder="Password"
+               secureTextEntry={true}
+               placeholderTextColor='#ffffff'
+               ref={(input) => this.password = input}
+               onChangeText={userPassword => this.setState({UserPassword})}
+               />
+             
+               <TouchableOpacity onPress={this.userLoginFunction} style={styles.button} >
+                 <Text style={styles.buttText}>Login</Text>
+               </TouchableOpacity>
+             </View>
+             <View style={styles.signupTextCont}>
+                <Text style={styles.signupText} >Don't have an account yet?  </Text>
+                <TouchableOpacity onPress={this.props.toggleLogin}><Text style={styles.signupButton}>Signup</Text></TouchableOpacity>
+                {/* <Text> {this.state.Test} </Text> */}
+                {/* <Button title='Logout' onPress={this.props.toggleLogin} /> */}
+             </View>
+         </View>
+       </View>
+      )
+    }
+  }
+}
+
